@@ -1,0 +1,211 @@
+##1st docker
+
+Step 1: Install Docker
+Download and install Docker Desktop from the official Docker website. After installation, start Docker 
+Desktop and ensure the Docker service is running.
+Step 2: Verify Docker Installation
+Open Command Prompt, PowerShell, or Terminal and execute: docker --version A successful 
+installation displays the installed Docker version.
+Step 3: Verify Docker Service 
+Check whether Docker is functioning properly: docker info This command displays Docker Engine 
+information and confirms communication with the Docker daemon.
+Step 4: Download an Image 
+Pull the Ubuntu image from Docker Hub: docker pull ubuntu Docker downloads the required image 
+layers and stores them locally.
+Step 5: View Available Images 
+Display all downloaded images: docker images The command shows: • Repository name • Tag • Image 
+ID • Creation date • Image size
+Step 6: Create and Run a Container 
+Create and start a container using the Ubuntu image: docker run -it ubuntu bash Explanation: • -i : 
+Interactive mode. • -t : Allocates a terminal. • ubuntu : Image name. • bash : Starts the Bash shell. The 
+terminal prompt changes to indicate execution inside the container. 
+Step 7: Interact with the Container 
+Execute commands within the running container: 
+ pwd 
+ ls 
+ whoami 
+These commands demonstrate interaction with the containerized environment
+Step 8: Exit the Container 
+Exit the running container: exit The container stops after exiting the shell session.
+Step 9: View Container Lifecycle Status 
+Display all containers: docker ps -a 
+Observe the container status: • Up (Running) • Exited (Stopped) 
+This demonstrates lifecycle state transitions.
+Step 10: Restart the Container 
+Start the stopped container again: docker start <container_id>
+Verify the status: docker ps
+Step 11: Access the Running Container 
+Connect to the container: docker exec -it bash This opens an interactive shell session within the 
+container.
+Step 12: Remove the Container
+Stop the container if necessary: docker stop Remove it: docker rm This deletes the container from the 
+Docker host.
+Step 13: Remove the Image 
+Delete the image: docker rmi ubuntu This removes the image from local storage
+
+
+## 2nd
+
+Step 1: Create the Application Directory 
+Open PowerShell or Terminal and create a directory for the web application: 
+mkdir myapp 
+cd myapp
+Step 2: Create the HTML File 
+Create a file named index.html. 
+For example: 
+Step 3: Create the Dockerfile
+Inside the same directory, create a file named: Dockerfile 
+The Dockerfile should contain: 
+FROM nginx 
+COPY index.html /usr/share/nginx/html
+Step 4: Verify Docker
+Before building the image, verify that Docker is available: docker --version 
+Optionally, obtain detailed Docker information using: docker info 
+Step 5: Build the Docker Image 
+From the directory containing the Dockerfile, execute: 
+docker build -t myapp . 
+Docker reads the Dockerfile and generates the myapp image. The build process should indicate 
+successful completion. The reference execution shows the image being successfully built and tagged as 
+myapp:latest. Figure 3: Successfully building the Docker image 
+Step 6: Verify the Image
+List the locally available Docker images: 
+docker images 
+Step 7: Run the Container
+Start a container from the newly created image: 
+docker run -p 8080:80 myapp
+Step 8: Access the Web Application
+Open a web browser and enter: http://localhost:8080
+
+##3rd kubernetes
+
+Step 1: Start the Kubernetes cluster
+Start Minikube and verify that the cluster is running. minikube start --driver=docker kubectl get nodes 
+Step 2: Create the application
+Create a project directory and an index.html file containing a simple webpage with the message “Hello 
+from Kubernetes!”. 
+Step 3: Create the Dockerfile
+Create a file named Dockerfile with the following instructions: 
+FROM nginx:alpine 
+COPY index.html /usr/share/nginx/html/index.html 
+EXPOSE 80 
+Step 4: Build the Docker image
+Build the application image using the following command: 
+docker build -t k8s-demo:v1 
+Step 5: Load the image into Minikube
+Make the Docker image available to the Kubernetes cluster. 
+minikube image load k8s-demo:v1 
+Step 6: Create a Kubernetes Deployment
+Create a Deployment with two replicas of the application. 
+kubectl create deployment k8s-demo --image=k8s-demo:v1 --replicas=2 
+Verify the Deployment: kubectl get deployments 
+Step 7: Verify the Pods
+Check whether both application Pods are running. 
+kubectl get pods 
+Both Pods should show Running status and 1/1 readiness. 
+Step 8: Expose the application
+Create a NodePort Service to expose the application on port 80. 
+kubectl expose deployment k8s-demo --type=NodePort --port=80 
+Verify the Service: 
+kubectl get services
+Step 9: Access the application
+Run the following command to access the application through a browser: 
+minikube service k8s-demo 
+The webpage displays the message “Hello from Kubernetes!”, confirming that the application is 
+accessible.
+
+##4th puppet pull based
+
+Step 1: Update the package repositories 
+Update the Ubuntu package lists before installing Puppet. 
+sudo apt update 
+Step 2: Install Puppet Agent
+Install the Puppet Agent package. 
+sudo apt install puppet-agent 
+Verify the installation: 
+puppet --version 
+Step 3: Install Puppet Server
+Install the Puppet Server package. 
+sudo apt install puppetserver
+Step 4: Start and verify the Puppet Server
+Start the Puppet Server service. 
+sudo systemctl start puppetserver 
+Check its status: 
+sudo systemctl status puppetserver 
+The service should display active (running). 
+Step 5: Configure the Puppet Server hostname
+Check the server hostname configured for the agent. 
+sudo puppet config print server --section agent 
+The configured hostname is puppet. Add the hostname mapping to /etc/hosts so the agent can resolve it 
+locally. 
+echo "127.0.0.1 puppet" | sudo tee -a /etc/hosts 
+Verify the hostname resolution: 
+getent hosts puppet 
+Step 6: Verify the Puppet Server port
+Check whether the Puppet Server is listening on port 8140
+sudo ss -ltnp | grep 8140 
+The output should show a listening service on port 8140. 
+Step 7: Create a Puppet manifest
+Create a manifest named first.pp. 
+nano first.pp 
+Enter the following Puppet code: 
+file { '/tmp/puppet-demo': ensure => directory, } 
+Save the file and exit the editor. 
+Step 8: Apply the Puppet manifest
+Execute the manifest using the Puppet command. 
+sudo puppet apply first.pp
+Step 9: Verify the resource
+Check whether the directory has been created. 
+ls -ld /tmp/puppet-demo 
+The output should display the directory and its permissions. 
+Step 10: Verify idempotency
+Apply the same manifest again. 
+sudo puppet apply first.pp 
+Since the directory already exists in the desired state, Puppet should report that no resource changes are 
+required.
+Step 11: Execute the Puppet Agent
+Run the Puppet Agent in test mode to initiate communication with the Puppet Server. 
+sudo puppet agent --test
+
+
+##5th puppet blocks
+
+Step 1: Create the project directory 
+Create a directory for the Puppet experiment and move into it. 
+mkdir -p ~/puppet-blocks-lab/modules/webdemo/manifests 
+cd ~/puppet-blocks-lab
+Step 2: Create a Puppet module 
+A module organizes related configuration code. The webdemo module contains a manifests directory 
+and an init.pp file.
+Step 3: Create a class inside the module 
+Create the module's main manifest. 
+nano modules/webdemo/manifests/init.pp 
+Add the following code: 
+class webdemo {
+file { '/tmp/puppet-blocks-demo.txt': 
+ensure => file, 
+content => upcase('puppet blocks demonstration'), } } 
+Save the file and exit the editor. Here, class webdemo defines a class, while the file resource ensures 
+that the specified file exists with the required content.
+Step 4: Understand the function 
+The built-in Puppet function upcase() converts a string into uppercase letters. For example: 
+upcase('puppet blocks demonstration') 
+The result is: 
+PUPPET BLOCKS DEMONSTRATION 
+This result is assigned to the file's content attribute. 
+Step 5: Create the main manifest 
+Create the main manifest that includes the module's class. 
+nano site.pp 
+Add the following code: 
+include webdemo 
+Save the file and exit the editor. The include statement declares the class so Puppet can apply the 
+resources defined inside it. 
+Step 6: Apply the Puppet configuration
+Run Puppet with the module path specified. 
+sudo puppet apply --modulepath=modules site.pp 
+Puppet locates the webdemo module, evaluates its class, executes the function, and creates the 
+configured file. 
+Step 7: Verify the output
+Display the generated file content. 
+cat /tmp/puppet-blocks-demo.txt
+Expected output: 
+PUPPET BLOCKS DEMONSTRATION
